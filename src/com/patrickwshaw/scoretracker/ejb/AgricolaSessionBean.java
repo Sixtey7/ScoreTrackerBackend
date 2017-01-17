@@ -17,19 +17,21 @@ public class AgricolaSessionBean {
 	
 	public void startGame() {
 		//recreate the game scores
-		LOGGER.debug("Starting a new game!");
+		LOGGER.info("Starting a new game!");
 		currentGameScores = new GameScores(GameEnum.AGRICOLA);
 	}
 	
-	public void addPlayer(String playerName) {
-		LOGGER.debug("Adding a new player named: " + playerName);
+	public Player addPlayer(String playerName) {
+		LOGGER.info("Adding a new player named: " + playerName);
 		Player newPlayer = new Player(playerName);		
 		currentGameScores.addPlayerToGame(newPlayer);
+		
+		return newPlayer;
 	}
 	
-	public boolean updateScoreForPlayer(String playerName, int score ){ 
-		LOGGER.debug("Setting the score for player: " + playerName + " to " + score);
-		return currentGameScores.updateScoreForPlayer(playerName, score);
+	public boolean updateScoreForPlayer(String id, int score ){ 
+		LOGGER.info("Setting the score for player with id: " + id + " to " + score);
+		return currentGameScores.updateScoreForPlayer(id, score);
 	}
 	
 	public GameScores getCurrentScore() {

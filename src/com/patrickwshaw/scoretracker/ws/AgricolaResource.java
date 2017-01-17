@@ -3,6 +3,7 @@ package com.patrickwshaw.scoretracker.ws;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.logging.Logger;
 
 import com.patrickwshaw.scoretracker.ejb.AgricolaSessionBean;
+import com.patrickwshaw.scoretracker.model.Player;
 
 @Path("/agricola")
 public class AgricolaResource {
@@ -33,11 +35,11 @@ public class AgricolaResource {
 		
 	}
 	
-	@GET
+	@PUT
 	@Path("/begin") 
 	public Response startGame(){
 		sessionBean.startGame();
-		
+		LOGGER.info("Starting a game!");
 		return Response.ok().build();
 	}
 	
@@ -50,19 +52,20 @@ public class AgricolaResource {
 	
 	@PUT
 	@Path("/addPlayer")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addUser(@QueryParam("player") String playerName) {
-		sessionBean.addPlayer(playerName);
-		return Response.ok().build();
+		Player newPlayer = sessionBean.addPlayer(playerName);
+		return Response.ok(newPlayer).build();
 	}
 	
 	@POST
 	@Path("/setScore")
-	public Response setScore(@QueryParam("player") String playerName, @QueryParam("score") int score) {
-		if (sessionBean.updateScoreForPlayer(playerName, score)) {
+	public Response setScore(@QueryParam("id") String id, @QueryParam("score") int score) {
+		if (sessionBean.updateScoreForPlayer(id, score)) {
 			return Response.ok("Score Updated!").build();
 		}
 		else {
-			return Response.status(Status.BAD_REQUEST).entity("No match found for player: " + playerName).build();
+			return Response.status(Status.BAD_REQUEST).entity("No match found for player id: " + id).build();
 		}
 	}
 	

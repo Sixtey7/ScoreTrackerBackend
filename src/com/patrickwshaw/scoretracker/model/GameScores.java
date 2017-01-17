@@ -44,6 +44,23 @@ public class GameScores {
 		return updateScoreForPlayer(player.getName(), score);
 	}
 	
+	public boolean updateScoreForPlayer(String id, int score) {
+		boolean success = false;
+		
+		//TODO: We probably eventually want to make this a hash map or something to cache
+		for (PlayerResult thisResult : this.playersInvolved) {
+			LOGGER.info("Testing value: " + thisResult.getPlayer().getId() + " against " + id);
+			if (thisResult.getPlayer().getId().equals(id)) {
+				LOGGER.info("Setting score for player: " + thisResult.getPlayer().getName() + " to " + score);
+				thisResult.setScore(score);
+				success = true;
+				break;
+			}
+		}
+		
+		return success;
+	}
+	/*
 	public boolean updateScoreForPlayer(String playerName, int score) {
 		boolean success = false;
 		
@@ -58,6 +75,7 @@ public class GameScores {
 		
 		return success;
 	}
+	*/
 	
 	public GameEnum getGamePlayed() {
 		return gamePlayed;
