@@ -1,6 +1,14 @@
 package com.patrickwshaw.scoretracker.ws;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -15,9 +23,13 @@ import org.jboss.logging.Logger;
 
 import com.patrickwshaw.scoretracker.ejb.AgricolaSessionBean;
 import com.patrickwshaw.scoretracker.model.Player;
+import com.patrickwshaw.scoretracker.model.testtable;
 
 @Path("/agricola")
 public class AgricolaResource {
+
+	//@PersistenceContext(name="PostgresDS", unitName="PostgresDS") // default type is PersistenceContextType.TRANSACTION
+	//EntityManager entMan; 
 
 	@Inject
 	private AgricolaSessionBean sessionBean;
@@ -75,5 +87,32 @@ public class AgricolaResource {
 		LOGGER.debug("Saving Session (Not Really) ;)");
 		
 		return Response.ok().build();
+	}
+	
+	@GET
+	@Path("/testHibernate")
+	public Response testHibernate() {
+		EntityManagerFactory fact = Persistence.createEntityManagerFactory("org.patrickwshaw.scoretracker");
+		
+		EntityManager entMan = fact.createEntityManager();
+		
+	//	entMan.getTransaction().begin();
+		
+		Query thisQuery = entMan.createQuery("Select t FROM testtable t");
+		
+		
+		Collection<testtable> result = thisQuery.getResultList();// entMan.createQuery( "from testtable", testtable.class ).getResultList();
+
+		entMan.close();
+		fact.close();
+		
+		String responseString = "";
+		for (testtable thisItem : result) {
+			responseString += thisItem.getId() + " --- " + thisItem.getTestString();
+		}
+		
+		
+		return Response.ok(responseString).build();
+		
 	}
 }
