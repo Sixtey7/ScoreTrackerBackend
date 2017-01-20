@@ -36,6 +36,7 @@ app.get('/testService', (req: express.Request, res: express.Response) => {
   console.log('Got an error: ' + e.message);
 });
 
+require('./routes/agricolaRoutes')(app);
 app.listen(30000, function() {
   console.log('App listening on port 30000');
 });
