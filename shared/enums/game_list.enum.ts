@@ -1,0 +1,6 @@
+export enum GameList {
+    AGRCIOLA,
+    CARCASSONNE,
+    LORDS_OF_WATERDEEP,
+    CASTLES_OF_BURGANDY
+};
