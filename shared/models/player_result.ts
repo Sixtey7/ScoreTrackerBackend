@@ -1,17 +1,17 @@
 import Player from './player';
 
 export default class PlayerResult {
-    private player: Player;
+    private playerId: number;
     private score: number;
 
-    constructor(_player: Player) {
-        this.player = _player;
+    constructor(_playerId: number) {
+        this.playerId = _playerId;
         this.score = 0;
     }
 
 
-    getPlayer(): Player {
-        return this.player;
+    getPlayerId(): number {
+        return this.playerId;
     }
 
     setScore(_score: number) {

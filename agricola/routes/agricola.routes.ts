@@ -31,17 +31,17 @@ export default class AgricolaRoutes {
             let gameResult: GameResult = this.controller.startGame();
             //TODO: do something!
 
-            res.status(200).send(gameResult.getId);
+            res.status(200).send(gameResult.getId() + '');
         });
 
         app.get('/agricola/currentScores', (req: express.Request, res: express.Response) => {
             let playerOne: Player = new Player(12345, 'hello');
-            let playerResultOne: PlayerResult = new PlayerResult(playerOne);
+            let playerResultOne: PlayerResult = new PlayerResult(playerOne.getId());
             
             playerResultOne.setScore(1234);
 
             let playerTwo: Player = new Player(67890, 'goodbye');
-            let playerResultTwo: PlayerResult = new PlayerResult(playerTwo);
+            let playerResultTwo: PlayerResult = new PlayerResult(playerTwo.getId());
 
             playerResultTwo.setScore(1235);
 
@@ -73,13 +73,25 @@ export default class AgricolaRoutes {
         });
 
         app.post('/agricola/setScore', (req: express.Request, res: express.Response) => {
-            //TODO: do stuff
-            res.status(200).end();
+            if ((req.query.gameId !== undefined) && (req.query.playerId !== undefined) && (req.query.score !== undefined)) {
+                console.log('\nSetting the score for\ngame: ' + req.query.gameId + '\nplayer: ' + req.query.playerId + '\nscore: ' + req.query.score);
+                if (this.controller.setScore(req.query.gameId, req.query.playerId, req.query.score)) {
+                    res.status(200).end();
+                }
+                else {
+                    console.log('Returning an error attempting to set the score for a player!');
+                    res.status(500).send('Failed to set score for player!');
+                }
+            }
+            else {
+                console.log('Got the wrong params when attempting to set the score!');
+                res.status(400).send('gameId, playerId, and score are all required!');
+            }
         });
 
         app.post('/agricola/saveSession', (req:express.Request, res: express.Response) => {
-            //TODO: do stuff
-            res.status(200).end();
+            //TODO: need to determine if this is needed, or if we'll just always be saving
+            res.status(400).send('Don\'t use this!');
         })
     }   
 }
