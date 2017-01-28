@@ -8,9 +8,6 @@ import {
 
 export default class AgricolaController {
 
-    constructor(){
-        //new PlayerDao(conn).superTest();
-    }
     sayHello(): string {
         return 'hello world';
     }
@@ -27,28 +24,68 @@ export default class AgricolaController {
     }
 
     public addPlayer(_gameId: number, _name: string): Promise<IPlayerModel> {
-        /*
-            Plan is to first look to see if we already have a player with the given name - if so, pull that player
-            If not, create the player
-            return the player record
-        */
-        
-        //TODO: remove hardcoded id
-        //let id: number = 12345;
-
+        let that = this;
         return new Promise((resolve, reject) => {
             console.log('Adding a new player with name: ' + _name);
-            let newPlayer = new Player({'name' : _name});
 
-            newPlayer.save().then( response => {
-                console.log('Success!: ' + JSON.stringify(response));
-                console.log('The assigned id was: ' + newPlayer.id);
-                resolve(newPlayer);
-            }, err => {
-                console.log('ERROR: ' + JSON.stringify(err));
-                reject(err);
-            })
+            //first, look to see if the user already exists
+            var query = { name: _name};
+            Player.findOne(query, function(err, player) {
+                if (err) {
+                    console.error('got an error looking for the player');
+                    reject(err);
+                };
+
+                if (player) {
+                    console.log('player already exists, not creating new one');
+                    //now that we found the player - we need to add it to the game
+                    that.addPlayerToGame(_gameId, player)
+                        .then((success) => {
+                            if (success) {
+                                resolve(player);
+                            }
+                            else {
+                                reject('player could not be added to game!');
+                            }
+                        })
+                        .catch((err) => {
+                            reject('failed to add player to game');
+                        });
+                }
+                else {
+                    console.log('player did not exist, creating a new one!');
+                    let newPlayer = new Player({'name' : _name});
+
+                    newPlayer.save().then( response => {
+                        console.log('Success!: ' + JSON.stringify(response));
+                        console.log('The assigned id was: ' + newPlayer.id);
+
+                        //now that we created the player, we need to add it to the game
+                        that.addPlayerToGame(_gameId, newPlayer)
+                            .then((success) => {
+                                if (success) {
+                                    resolve(newPlayer);
+                                }
+                                else {
+                                    reject('player could not be added to game!');
+                                }
+                            })
+                            .catch((err) => {
+                                reject('failed to add player to game');
+                            });
+                    }, err => {
+                        console.log('ERROR: ' + JSON.stringify(err));
+                        reject(err);
+                    });
+                }
+            });
         })
+    }
+
+    private addPlayerToGame(_gameId: number, player: IPlayerModel): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
     }
 
     public getScore(_gameId: number, _gameType: GameList): GameResult {
