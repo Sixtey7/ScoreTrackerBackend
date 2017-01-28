@@ -1,16 +1,14 @@
-import Player from './player';
-
 export default class PlayerResult {
-    private playerId: number;
+    private playerId: string | number;
     private score: number;
 
-    constructor(_playerId: number) {
+    constructor(_playerId: string | number) {
         this.playerId = _playerId;
         this.score = 0;
     }
 
 
-    getPlayerId(): number {
+    getPlayerId(): string | number{
         return this.playerId;
     }
 

@@ -1,6 +1,6 @@
 import PlayerResult from './player_result';
-import Player from './player';
 import { GameList } from '../enums/game_list.enum';
+import { IPlayerModel } from './player';
 
 export default class GameResult {
     private id: number;
@@ -29,11 +29,11 @@ export default class GameResult {
         this.playerResults.push(_playerResult);
     }
 
-    public updateScoreForPlayer(_player: Player, _score: number) {
-        return this.updateScoreForPlayerId(_player.getId(), _score);
+    public updateScoreForPlayer(_player: IPlayerModel, _score: number) {
+        return this.updateScoreForPlayerId(_player.id, _score);
     }
 
-    public updateScoreForPlayerId(_playerId: number, _score: number) {
+    public updateScoreForPlayerId(_playerId: string | number, _score: number) {
         let returnResult: boolean = false;
 
         //TODO: making this a map or something might make this quicker

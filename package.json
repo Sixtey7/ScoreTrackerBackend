@@ -20,12 +20,13 @@
   },
   "homepage": "https://github.com/Sixtey7/ScoreTrackerBackend#readme",
   "dependencies": {
-    "express": "^4.13.3",
     "body-parser": "^1.14.1",
-    "errorhandler": "^1.4.2",
-    "method-override": "^2.3.5",
     "ejs": ">= 0.5.0",
-    "mongodb": ">= 1.4.29"
+    "errorhandler": "^1.4.2",
+    "express": "^4.13.3",
+    "method-override": "^2.3.5",
+    "mongodb": ">= 1.4.29",
+    "mongoose": "^4.7.9"
   },
   "devDependencies": {
     "@types/node": "^7.0.0",

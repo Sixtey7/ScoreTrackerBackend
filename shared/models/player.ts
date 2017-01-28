@@ -1,21 +1,14 @@
-export default class Player {
-    private id: number;
-    private name: string;
+import * as mongoose from 'mongoose';
 
-    constructor(_id: number, _name: string) {
-        this.id = _id;
-        this.name = _name;
-    }
-
-    getId(): number {
-        return this.id;
-    }
-
-    setName(_name: string) {
-        this.name = _name;
-    }
-
-    getName(): string {
-        return this.name;
-    }
+interface IPlayer {
+    name: string;
 }
+
+interface IPlayerModel extends IPlayer, mongoose.Document{}
+var playerSchema = new mongoose.Schema({
+    name: String
+});
+
+var Player = mongoose.model<IPlayerModel>("Player", playerSchema);
+
+export { Player, IPlayerModel };

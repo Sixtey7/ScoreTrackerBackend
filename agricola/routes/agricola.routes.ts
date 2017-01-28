@@ -1,19 +1,19 @@
 import express = require('express');
 import {
     Player,
+    IPlayerModel,
     PlayerResult,
     GameResult
 } from '../../shared/shared';
 
 import AgricolaController from '../controllers/agricola.controller';
-import mongodb = require('mongodb');
 
 export default class AgricolaRoutes {
 
     private controller: AgricolaController;
 
-    constructor(app: express, db: mongodb.Db) {
-        this.controller = new AgricolaController(db);
+    constructor(app: express) {
+        this.controller = new AgricolaController();
 
         this.configureRoutes(app);
     }
@@ -36,13 +36,13 @@ export default class AgricolaRoutes {
         });
 
         app.get('/agricola/currentScores', (req: express.Request, res: express.Response) => {
-            let playerOne: Player = new Player(12345, 'hello');
-            let playerResultOne: PlayerResult = new PlayerResult(playerOne.getId());
+            let playerOne: IPlayerModel = new Player({'name': 'hello'});
+            let playerResultOne: PlayerResult = new PlayerResult(playerOne.id);
             
             playerResultOne.setScore(1234);
 
-            let playerTwo: Player = new Player(67890, 'goodbye');
-            let playerResultTwo: PlayerResult = new PlayerResult(playerTwo.getId());
+            let playerTwo: IPlayerModel = new Player({ name: 'goodbye' });
+            let playerResultTwo: PlayerResult = new PlayerResult(playerTwo.id);
 
             playerResultTwo.setScore(1235);
 
@@ -54,12 +54,18 @@ export default class AgricolaRoutes {
         });
 
         app.put('/agricola/addPlayer', (req: express.Request, res: express.Response) => {
-            //TODO: do something!
+            console.log('adding a player!');
             if (req.query.gameId !== undefined) {
                 if (req.query.playerName !== undefined) {
-                    let newPlayer = this.controller.addPlayer(req.query.gameId, req.query.playerName);
-                    
-                    res.status(200).json(newPlayer);
+                    this.controller.addPlayer(req.query.gameId, req.query.playerName)
+                        .then(newPlayer => {
+                            console.log('Promise resolved with new id: ' + newPlayer.id);
+                            res.status(200).send(newPlayer);
+                        })
+                        .catch(reject => {
+                            console.error('Got an error trying to save player!');
+                            res.status(500).send(reject);
+                        })
                 }
                 else {
                     res.status(400).send('playerName parameter is required!');

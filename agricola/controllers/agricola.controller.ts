@@ -1,17 +1,15 @@
 import { 
     Player,
-    PlayerDao,
+    IPlayerModel,
     PlayerResult,
     GameResult,
     GameList
 } from '../../shared/shared';
 
-import mongodb = require('mongodb');
-
 export default class AgricolaController {
 
-    constructor(conn: mongodb.Db){
-        new PlayerDao(conn).superTest();
+    constructor(){
+        //new PlayerDao(conn).superTest();
     }
     sayHello(): string {
         return 'hello world';
@@ -28,7 +26,7 @@ export default class AgricolaController {
 
     }
 
-    public addPlayer(_gameId: number, _name: string): Player {
+    public addPlayer(_gameId: number, _name: string): Promise<IPlayerModel> {
         /*
             Plan is to first look to see if we already have a player with the given name - if so, pull that player
             If not, create the player
@@ -36,9 +34,21 @@ export default class AgricolaController {
         */
         
         //TODO: remove hardcoded id
-        let id: number = 12345;
+        //let id: number = 12345;
 
-        return new Player(id, _name);
+        return new Promise((resolve, reject) => {
+            console.log('Adding a new player with name: ' + _name);
+            let newPlayer = new Player({'name' : _name});
+
+            newPlayer.save().then( response => {
+                console.log('Success!: ' + JSON.stringify(response));
+                console.log('The assigned id was: ' + newPlayer.id);
+                resolve(newPlayer);
+            }, err => {
+                console.log('ERROR: ' + JSON.stringify(err));
+                reject(err);
+            })
+        })
     }
 
     public getScore(_gameId: number, _gameType: GameList): GameResult {

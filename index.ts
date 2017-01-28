@@ -6,11 +6,6 @@ import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
 import mongodb = require('mongodb');
 import AgricolaRoutes from './agricola/routes/agricola.routes';
-import DB from './config/db';
-
-
-//import * as routes from "./routes/index";
-//import * as db from "./db"
 
 let app: express = express();
 
@@ -27,10 +22,13 @@ if (env === 'development') {
 
 
 //setup the database
-let db: mongodb.Db = new DB().conn();
+var mongoose = require('mongoose');
+mongoose.connect("mongodb://localhost:27017/scoretracker");
+
+
 
 //Setup the routes
-new AgricolaRoutes(app, db);
+new AgricolaRoutes(app);
 
 app.listen(30000, function() {
   console.log('App listening on port 30000');
