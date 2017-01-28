@@ -6,13 +6,14 @@ import {
 } from '../../shared/shared';
 
 import AgricolaController from '../controllers/agricola.controller';
+import mongodb = require('mongodb');
 
 export default class AgricolaRoutes {
 
     private controller: AgricolaController;
 
-    constructor(app: express) {
-        this.controller = new AgricolaController();
+    constructor(app: express, db: mongodb.Db) {
+        this.controller = new AgricolaController(db);
 
         this.configureRoutes(app);
     }

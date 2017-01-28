@@ -4,8 +4,9 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
-
+import mongodb = require('mongodb');
 import AgricolaRoutes from './agricola/routes/agricola.routes';
+import DB from './config/db';
 
 
 //import * as routes from "./routes/index";
@@ -24,8 +25,12 @@ if (env === 'development') {
   app.use(errorHandler());
 }
 
+
+//setup the database
+let db: mongodb.Db = new DB().conn();
+
 //Setup the routes
-new AgricolaRoutes(app);
+new AgricolaRoutes(app, db);
 
 app.listen(30000, function() {
   console.log('App listening on port 30000');

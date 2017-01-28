@@ -1,11 +1,18 @@
 import { 
     Player,
+    PlayerDao,
     PlayerResult,
     GameResult,
     GameList
 } from '../../shared/shared';
 
+import mongodb = require('mongodb');
+
 export default class AgricolaController {
+
+    constructor(conn: mongodb.Db){
+        new PlayerDao(conn).superTest();
+    }
     sayHello(): string {
         return 'hello world';
     }
