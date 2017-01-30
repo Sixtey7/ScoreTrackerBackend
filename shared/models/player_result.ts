@@ -1,22 +1,16 @@
-export default class PlayerResult {
-    private playerId: string | number;
-    private score: number;
+import * as mongoose from 'mongoose';
 
-    constructor(_playerId: string | number) {
-        this.playerId = _playerId;
-        this.score = 0;
-    }
-
-
-    getPlayerId(): string | number{
-        return this.playerId;
-    }
-
-    setScore(_score: number) {
-        this.score = _score;
-    }
-
-    getScore(): number {
-        return this.score;
-    }
+interface IPlayerResult {
+    playerId: string | number;
+    score: number;
 }
+
+interface IPlayerResultModel extends IPlayerResult, mongoose.Document{}
+var playerResultSchema = new mongoose.Schema({
+    playerId: String,
+    score: Number
+});
+
+var PlayerResult = mongoose.model<IPlayerResultModel>("PlayerResult", playerResultSchema);
+
+export { playerResultSchema, PlayerResult, IPlayerResultModel };

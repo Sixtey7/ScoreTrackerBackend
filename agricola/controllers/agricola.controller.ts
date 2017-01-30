@@ -2,7 +2,9 @@ import {
     Player,
     IPlayerModel,
     PlayerResult,
+    IPlayerResultModel,
     GameResult,
+    IGameResultModel,
     GameList
 } from '../../shared/shared';
 
@@ -13,14 +15,17 @@ export default class AgricolaController {
     }
 
 
-    public startGame(): GameResult {
-        //TODO remove hardcoded id
-        let id: number = 12345;
+    public startGame(_gameType: GameList): Promise<IGameResultModel> {
+        return new Promise((resolve, reject) => {
+            let gameResult: IGameResultModel = new GameResult({ game: _gameType});
 
-        let gameResult: GameResult = new GameResult(id, GameList.AGRCIOLA);
-
-        return gameResult;
-
+            gameResult.save()
+                .then(response => {
+                    resolve(gameResult);
+                }, err => {
+                    reject(err);
+                });
+        });
     }
 
     public addPlayer(_gameId: number, _name: string): Promise<IPlayerModel> {
@@ -84,36 +89,100 @@ export default class AgricolaController {
 
     private addPlayerToGame(_gameId: number, player: IPlayerModel): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            resolve(true);
+            //find the game for that given id
+            var query = { _id: _gameId };
+            GameResult.findOne(query, function(err, game) {
+                if (err) {
+                    reject('Failed to find a game matching the id provided');
+                }
+
+                if (game) {
+
+                    for (let x: number = 0; x < game.playerResults.length; x++) {
+                        if (game.playerResults[x].id === player.id) {
+                            //the user has already been added to the game!
+                            reject('The user has already been added to the game!');
+                        }
+                    }
+
+                    //if we're here, the user hasn't been added yet - lets add it
+                    //first, create a new player result
+                    let newPlayerResult : IPlayerResultModel = new PlayerResult( {playerId: player.id, score: 0});
+                    game.playerResults.push(newPlayerResult);
+
+                    game.save().
+                        then(response => {
+                            console.log('successfully save the game!');
+                            resolve(true);
+                        }, err => {
+                            console.log('got an error attempting to save the game after adding the user!');
+                            reject('Failed to update game entry');
+                        });
+                }   
+                else {
+                    reject ('game not found with that id!');
+                }
+            });
+            
+        });
+        
+    }
+
+    public getScore(_gameId: number): Promise<IGameResultModel> {
+        return new Promise((resolve, reject) => {
+            var query = {_id: _gameId};
+            GameResult.findOne(query, function(err, game) {
+                if (err) {
+                    reject(err);
+                }
+
+                if (game) {
+                    resolve(game);
+                }
+                else {
+                    reject('No game found for the given id');
+                }
+            });
         });
     }
 
-    public getScore(_gameId: number, _gameType: GameList): GameResult {
-        //TODO: Implement this for real
-        let returnResult: GameResult = new GameResult(_gameId, _gameType);
+    public setScore(_gameId: number, _playerId: number, _score: number): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            var query = { _id: _gameId };
+            GameResult.findOne(query, function(err, game) {
+                if (err) {
+                    console.error('Got an error attempting to find a game with id: ' + _gameId);
+                    reject(err);
+                }
+                
+                if (game) {
+                    //found a game
+                    let foundPlayer: boolean = false;
+                    for (let x: number = 0; x < game.playerResults.length; x++) {
+                        if (game.playerResults[x].playerId === _playerId) {
+                            //found a matching player
+                            foundPlayer = true;
+                            console.log('found a matching player!');
+                            game.playerResults[x].score = _score;
+                            //now save the game
+                            game.save()
+                                .then(() => resolve(true), () => resolve(false));
+                        }
+                        else {
+                            console.log(game.playerResults[x].playerId + '\ndoes not equal\n' + _playerId);
+                        }
 
-        let playerResultOne: PlayerResult = new PlayerResult(123);
-        playerResultOne.setScore(5);
-        returnResult.addPlayerToGame(playerResultOne);
+                    }
 
-
-        return returnResult;
-    }
-
-    public setScore(_gameId: number, _playerId: number, _score: number): boolean {
-        let returnResult: boolean = false;
-
-        /*
-            Plan is to first find the game result, then set the score for the player
-        */
-
-        let fakeGameResult: GameResult = new GameResult(_gameId, GameList.AGRCIOLA);
-
-        fakeGameResult.updateScoreForPlayerId(_playerId, _score);
-
-        //TODO: For now, always returning true to get rid of some errors on the frontend
-        returnResult = true;
-        //TODO End yet another hacky bs
-        return returnResult;
+                    if (!foundPlayer) {
+                        reject('player not found for game!');
+                    }
+                }
+                else {
+                    console.error('No game was found for id: ' + _gameId);
+                    reject('No game found for given id (' + _gameId + ')');
+                }
+            })
+        });
     }
 }
