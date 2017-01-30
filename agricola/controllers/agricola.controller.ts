@@ -18,13 +18,31 @@ export default class AgricolaController {
     public startGame(_gameType: GameList): Promise<IGameResultModel> {
         return new Promise((resolve, reject) => {
             let gameResult: IGameResultModel = new GameResult({ game: _gameType});
-
             gameResult.save()
                 .then(response => {
                     resolve(gameResult);
                 }, err => {
                     reject(err);
                 });
+        });
+    }
+
+    public getAllGames(): Promise<IGameResultModel> {
+        return new Promise((resolve, reject) => {
+            GameResult.find({}, function(err, games) {
+                if (err) {
+                    console.error('Got an error trying to query all games: ' + err);
+                    reject(err);
+                }
+
+                if (games) {
+                    resolve(games);
+                }
+                else {
+                    reject('No games found!');
+                }
+                
+            });
         });
     }
 

@@ -45,6 +45,16 @@ export default class AgricolaRoutes {
                 });
         });
 
+        app.get('/agricola/allGames', (req: express.Request, res:express.Response) => {
+            this.controller.getAllGames()
+                .then(response => {
+                    res.status(200).send(response);
+                })
+                .catch(err => {
+                    res.status(500).send(err);
+                });
+        });
+
         app.get('/agricola/currentScores', (req: express.Request, res: express.Response) => {
 
             if (req.query.gameId !== undefined) {
