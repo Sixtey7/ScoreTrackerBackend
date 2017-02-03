@@ -31,18 +31,23 @@ export default class AgricolaRoutes {
         app.put('/agricola/begin', (req: express.Request, res: express.Response) => {
             console.log('Starting a game!');
 
-            this.controller.startGame(GameList.AGRCIOLA)
-                .then(response => {
-                    if (response) {
-                        res.status(200).send(response.id);
-                    }
-                    else {
-                        res.status(500).send('failed to save game in database');
-                    }
-                })
-                .catch(err => {
-                    res.status(500).send(err);
-                });
+            if (req.query.date !== undefined) {
+                this.controller.startGame(GameList.AGRCIOLA, req.query.date);
+            }
+            else {
+                this.controller.startGame(GameList.AGRCIOLA)
+                    .then(response => {
+                        if (response) {
+                            res.status(200).send(response.id);
+                        }
+                        else {
+                            res.status(500).send('failed to save game in database');
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send(err);
+                    });
+            }
         });
 
         app.get('/agricola/allGames', (req: express.Request, res:express.Response) => {

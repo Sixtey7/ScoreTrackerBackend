@@ -15,9 +15,16 @@ export default class AgricolaController {
     }
 
 
-    public startGame(_gameType: GameList): Promise<IGameResultModel> {
+    public startGame(_gameType: GameList, _date?: number): Promise<IGameResultModel> {
         return new Promise((resolve, reject) => {
-            let gameResult: IGameResultModel = new GameResult({ game: _gameType});
+            let gameDate: Date;
+            if (_date) {
+                gameDate = new Date(_date);
+            }
+            else {
+                gameDate = new Date();
+            }
+            let gameResult: IGameResultModel = new GameResult({ game: _gameType, date: gameDate});
             gameResult.save()
                 .then(response => {
                     resolve(gameResult);
