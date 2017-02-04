@@ -8,14 +8,14 @@ import {
     GameList
 } from '../../shared/shared';
 
-import AgricolaController from '../controllers/agricola.controller';
+import StandardController from '../controllers/standard.controller';
 
 export default class AgricolaRoutes {
 
-    private controller: AgricolaController;
+    private controller: StandardController;
 
     constructor(app: express) {
-        this.controller = new AgricolaController();
+        this.controller = new StandardController();
 
         this.configureRoutes(app);
     }
@@ -24,11 +24,11 @@ export default class AgricolaRoutes {
     private configureRoutes(app: express) {
         console.log('TYPE: ' + typeof app);
 
-        app.get('/agricola/hello', (req: express.Request, res: express.Response) => {
+        app.get('/standard/hello', (req: express.Request, res: express.Response) => {
             res.status(200).send(this.controller.sayHello());
         });
 
-        app.put('/agricola/begin', (req: express.Request, res: express.Response) => {
+        app.put('/standard/begin', (req: express.Request, res: express.Response) => {
             console.log('Starting a game!');
 
             if (req.query.date !== undefined) {
@@ -50,7 +50,7 @@ export default class AgricolaRoutes {
             }
         });
 
-        app.get('/agricola/players', (req: express.Request, res: express.Response) => {
+        app.get('/standard/players', (req: express.Request, res: express.Response) => {
             if (req.query.playerIds !== undefined) {
                 this.controller.getPlayers(req.query.playerIds)
                     .then(response => {
@@ -65,7 +65,7 @@ export default class AgricolaRoutes {
             }
         });
 
-        app.get('/agricola/allGames', (req: express.Request, res:express.Response) => {
+        app.get('/standard/allGames', (req: express.Request, res:express.Response) => {
             this.controller.getAllGames()
                 .then(response => {
                     res.status(200).send(response);
@@ -75,7 +75,7 @@ export default class AgricolaRoutes {
                 });
         });
 
-        app.get('/agricola/currentScores', (req: express.Request, res: express.Response) => {
+        app.get('/standard/currentScores', (req: express.Request, res: express.Response) => {
 
             if (req.query.gameId !== undefined) {
                 this.controller.getScore(req.query.gameId)
@@ -91,7 +91,7 @@ export default class AgricolaRoutes {
             }
         });
 
-        app.put('/agricola/addPlayer', (req: express.Request, res: express.Response) => {
+        app.put('/standard/addPlayer', (req: express.Request, res: express.Response) => {
             console.log('adding a player!');
             if (req.query.gameId !== undefined) {
                 if (req.query.playerName !== undefined) {
@@ -117,7 +117,7 @@ export default class AgricolaRoutes {
             console.log('Got an error adding a player: ' + e.message);
         });
 
-        app.post('/agricola/setScore', (req: express.Request, res: express.Response) => {
+        app.post('/standard/setScore', (req: express.Request, res: express.Response) => {
             if ((req.query.gameId !== undefined) && (req.query.playerId !== undefined) && (req.query.score !== undefined)) {
                 console.log('\nSetting the score for\ngame: ' + req.query.gameId + '\nplayer: ' + req.query.playerId + '\nscore: ' + req.query.score);
                 this.controller.setScore(req.query.gameId, req.query.playerId, req.query.score)
@@ -140,7 +140,7 @@ export default class AgricolaRoutes {
             }
         });
 
-        app.post('/agricola/saveSession', (req:express.Request, res: express.Response) => {
+        app.post('/standard/saveSession', (req:express.Request, res: express.Response) => {
             //TODO: need to determine if this is needed, or if we'll just always be saving
             res.status(400).send('Don\'t use this!');
         })

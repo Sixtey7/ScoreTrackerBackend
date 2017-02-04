@@ -8,7 +8,7 @@ import {
     GameList
 } from '../../shared/shared';
 
-export default class AgricolaController {
+export default class StandardController {
 
     sayHello(): string {
         return 'hello world';

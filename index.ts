@@ -5,7 +5,7 @@ import * as bodyParser from "body-parser";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
 import mongodb = require('mongodb');
-import AgricolaRoutes from './agricola/routes/agricola.routes';
+import StandardRoutes from './standard/routes/standard.routes';
 
 let app: express = express();
 
@@ -28,7 +28,7 @@ mongoose.connect("mongodb://localhost:27017/scoretracker");
 
 
 //Setup the routes
-new AgricolaRoutes(app);
+new StandardRoutes(app);
 
 app.listen(30000, function() {
   console.log('App listening on port 30000');
