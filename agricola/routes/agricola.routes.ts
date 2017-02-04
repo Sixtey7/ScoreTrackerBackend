@@ -50,6 +50,21 @@ export default class AgricolaRoutes {
             }
         });
 
+        app.get('/agricola/players', (req: express.Request, res: express.Response) => {
+            if (req.query.playerIds !== undefined) {
+                this.controller.getPlayers(req.query.playerIds)
+                    .then(response => {
+                        res.status(200).send(response);
+                    })
+                    .catch(err => {
+                        res.status(500).send(err);
+                    });
+            }
+            else {
+                res.status(400).send('playerIds is a required parameter!');
+            }
+        });
+
         app.get('/agricola/allGames', (req: express.Request, res:express.Response) => {
             this.controller.getAllGames()
                 .then(response => {

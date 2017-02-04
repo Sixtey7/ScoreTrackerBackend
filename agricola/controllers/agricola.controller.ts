@@ -34,6 +34,27 @@ export default class AgricolaController {
         });
     }
 
+    public getPlayers(playerIds: string[]) {
+        return new Promise((resolve, reject) => {
+            var query = { _id : {$in : playerIds}};
+
+            Player.find(query, function(err, players) {
+                if (err) { 
+                    console.error('got an error attempting to find the players:\n' + err);
+                    reject(err);
+                }
+
+                if (players) {
+                    resolve(players);
+                }
+                else {
+                    console.error('no players were found for the given ids');
+                    reject('No players found!');
+                }
+            })
+        })
+    }
+
     public getAllGames(): Promise<IGameResultModel> {
         return new Promise((resolve, reject) => {
             GameResult.find({}, function(err, games) {
