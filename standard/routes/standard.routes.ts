@@ -31,22 +31,33 @@ export default class AgricolaRoutes {
         app.put('/standard/begin', (req: express.Request, res: express.Response) => {
             console.log('Starting a game!');
 
-            if (req.query.date !== undefined) {
-                this.controller.startGame(GameList.AGRCIOLA, req.query.date);
+            if (req.query.gameName !== undefined) {
+                let gameToStart: GameList = GameList.fromReadableString(req.query.gameName);
+                if (gameToStart !== null) {
+                    if (req.query.date !== undefined) {
+                        this.controller.startGame(gameToStart, req.query.date);
+                    }
+                    else {
+                            this.controller.startGame(gameToStart)
+                                .then(response => {
+                                    if (response) {
+                                        res.status(200).send(response.id);
+                                    }
+                                    else {
+                                        res.status(500).send('failed to save game in database');
+                                    }
+                                })
+                                .catch(err => {
+                                    res.status(500).send(err);
+                                });
+                        }
+                    }
+                else {
+                    res.status(400).send('gameName: ' + req.query.gameName + ' was not a valid game!');
+                }
             }
             else {
-                this.controller.startGame(GameList.AGRCIOLA)
-                    .then(response => {
-                        if (response) {
-                            res.status(200).send(response.id);
-                        }
-                        else {
-                            res.status(500).send('failed to save game in database');
-                        }
-                    })
-                    .catch(err => {
-                        res.status(500).send(err);
-                    });
+                res.status(400).send('gameName is a required parameter!');
             }
         });
 
