@@ -32,7 +32,8 @@ export default class AgricolaRoutes {
             console.log('Starting a game!');
 
             if (req.query.gameName !== undefined) {
-                let gameToStart: GameList = GameList.fromReadableString(req.query.gameName);
+                let gameToStart: GameList = GameList[GameList[req.query.gameName]];
+                console.log('Determined the enum: ' + gameToStart.toString());
                 if (gameToStart !== null) {
                     if (req.query.date !== undefined) {
                         this.controller.startGame(gameToStart, req.query.date);
