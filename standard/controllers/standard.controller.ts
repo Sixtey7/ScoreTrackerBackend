@@ -55,7 +55,7 @@ export default class StandardController {
         })
     }
 
-    public getAllGames(): Promise<IGameResultModel> {
+    public getAllGames(): Promise<IGameResultModel[]> {
         return new Promise((resolve, reject) => {
             GameResult.find({}, function(err, games) {
                 if (err) {
@@ -72,6 +72,18 @@ export default class StandardController {
                 
             });
         });
+    }
+
+    public getAllPlayers(): Promise<IPlayerModel[]> {
+        return new Promise((resolve, reject) => {
+            Player.find({}, function(err, players) {
+                if (err) {
+                    console.error('got an error trying to query all players: ' + err);
+                    reject(err);
+                }
+                resolve(players);
+            })
+        })
     }
 
     public addPlayer(_gameId: number, _name: string): Promise<IPlayerModel> {

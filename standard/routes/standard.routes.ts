@@ -5,7 +5,8 @@ import {
     PlayerResult,
     IPlayerResultModel,
     IGameResultModel,
-    GameList
+    GameList,
+    TotalResult
 } from '../../shared/shared';
 
 import StandardController from '../controllers/standard.controller';
@@ -86,6 +87,23 @@ export default class AgricolaRoutes {
                     res.status(500).send(err);
                 });
         });
+
+        app.get('/standard/total', (req: express.Request, res: express.Response) => {
+            this.controller.getAllGames()
+                .then(allGames => {
+                    this.controller.getAllPlayers()
+                        .then(allPlayers => {
+                            let returnResult: TotalResult = new TotalResult(allGames, allPlayers);
+                            res.status(200).send(returnResult);
+                        })
+                        .catch(err => {
+                            res.status(500).send(err);
+                        })
+                })
+                .catch(err => {
+                    res.status(500).send(err);
+                })
+        })
 
         app.get('/standard/currentScores', (req: express.Request, res: express.Response) => {
 
