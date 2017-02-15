@@ -11,4 +11,4 @@ var playerSchema = new mongoose.Schema({
 
 var Player = mongoose.model<IPlayerModel>("Player", playerSchema);
 
-export { Player, IPlayerModel };
+export { Player, IPlayer, IPlayerModel };

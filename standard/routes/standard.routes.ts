@@ -11,7 +11,7 @@ import {
 
 import StandardController from '../controllers/standard.controller';
 
-export default class AgricolaRoutes {
+export default class StandardRoutes {
 
     private controller: StandardController;
 
