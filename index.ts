@@ -7,6 +7,7 @@ import methodOverride = require("method-override");
 import mongodb = require('mongodb');
 import StandardRoutes from './standard/routes/standard.routes';
 import { AgricolaRoutes } from './agricola/agricola';
+import { LauncherRoutes } from './launcher/launcher';
 
 let app: express = express();
 
@@ -31,6 +32,7 @@ mongoose.connect("mongodb://localhost:27017/scoretracker");
 //Setup the routes
 new StandardRoutes(app);
 new AgricolaRoutes(app);
+new LauncherRoutes(app);
 
 app.listen(30000, function() {
   console.log('App listening on port 30000');
