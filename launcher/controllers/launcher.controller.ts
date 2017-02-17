@@ -2,6 +2,7 @@ import {
     GameList,
     IGameResultModel,
     IPlayerResult,
+    GameResultSummary
 } from '../../shared/shared';
 
 import {
@@ -30,12 +31,12 @@ export default class LauncherController {
         return new Promise<LauncherResult>((resolve, reject) => {
             parallel({
                 standard: (callback) => {
-                    this.standardController.getAllGames()
+                    this.standardController.getAllGamesSummary()
                         .then(response => callback(null, response))
                         .catch(err => callback(err, null));
                 },
                 agricola: (callback) => {
-                    this.agricolaController.test()
+                    this.agricolaController.getAllGamesSummary()
                         .then(response => callback(null, response))
                         .catch(err => callback(err, null));
                 },
@@ -46,19 +47,22 @@ export default class LauncherController {
                 }
             },
                 function(err, results) {
+
+                    if (err) {
+                        console.error('GOT AN ERROR: ' + err);
+                        reject(err);
+                    }
                     console.log('---------------------------------------------');
                     console.log('ASYNC RESOLVED!!!!!!');
                     console.log(JSON.stringify(results));
                     console.log('---------------------------------------------');
 
-                    for (let x: number = 0; x < results.length; x++) {
-                        console.log(typeof results[x]);
-                    }
-
                     let response: LauncherResult = new LauncherResult();
-                    response.standardGames = results['standard'];
-                    response.agricolaGames = results['agricola'];
+                    response.gameResults = new Array<GameResultSummary>();
+                    
+                    response.gameResults = results['standard'].concat(results['agricola']);
                     response.players = results['players'];
+
                     resolve(response);
                 }
             );

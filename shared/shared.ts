@@ -4,6 +4,8 @@ import { IPlayerResult, IPlayerResultModel, PlayerResult } from './models/player
 import { IGameResultModel, GameResult } from './models/game_result';
 import { GameList } from './enums/game_list.enum';
 import TotalResult from './models/total_result';
+import PlayerResultSummary from './models/player_result_summary';
+import GameResultSummary from './models/game_result_summary';
 
 export {
     Player,
@@ -15,5 +17,7 @@ export {
     GameResult,
     IGameResultModel,
     GameList,
-    TotalResult
+    TotalResult,
+    PlayerResultSummary,
+    GameResultSummary
 };

@@ -5,7 +5,9 @@ import {
     IPlayerResultModel,
     GameResult,
     IGameResultModel,
-    GameList
+    GameList,
+    GameResultSummary,
+    PlayerResultSummary
 } from '../../shared/shared';
 
 export default class StandardController {
@@ -72,6 +74,38 @@ export default class StandardController {
                 
             });
         });
+    }
+
+
+    public getAllGamesSummary(): Promise<GameResultSummary[]> {
+        return new Promise((resolve, reject) => {
+            GameResult.find({}, {_id: 1, game: 1, 'playerResults.playerId': 1}, function(err, games) {
+                if (err) {
+                    console.log('Got an error trying to get a subset of params: ' + err);
+                    reject(err);
+                }
+
+                if (games) {
+                    let returnVal: GameResultSummary[] = new Array<GameResultSummary>();
+                    for (let x: number = 0; x < games.length; x++) {
+                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].game, games[x].date);
+                        for (let y: number = 0; y < games[x].playerResults.length; y++) {
+                            newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId));
+                        }
+                        
+                        if (newVal === null) {
+                            console.log('NULL');
+                        }
+                        returnVal.push(newVal);
+                    }
+
+                    resolve(returnVal);
+                }
+                else {
+                    reject('No results found!');
+                }
+            })
+        })
     }
 
     public getAllPlayers(): Promise<IPlayerModel[]> {

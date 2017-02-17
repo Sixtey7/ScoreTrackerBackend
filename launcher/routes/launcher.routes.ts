@@ -12,7 +12,7 @@ export default class LauncherRoutes {
     }
 
     private configureRoutes(app: express) {
-        app.get('/launcher/test', (req: express.Request, res: express.Response) => {
+        app.get('/launcher/summary', (req: express.Request, res: express.Response) => {
             this.controller.getAll()
                 .then(response => {
                     res.status(200).send(response);
