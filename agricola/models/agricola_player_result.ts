@@ -16,6 +16,7 @@ interface IAgricolaPlayerResult extends IPlayerResult {
     familyNum: number;
     cardNum: number;
     bonusNum: number;
+    score: number;
 }
 
 interface IAgricolaPlayerResultModel extends IAgricolaPlayerResult, IPlayerResultModel, mongoose.Document{}
@@ -33,7 +34,8 @@ var agricolaPlayerResultSchema = new mongoose.Schema({
     stoneNum: Number,
     familyNum: Number,
     cardNum: Number,
-    bonusNum: Number
+    bonusNum: Number,
+    score: Number
 });
 
 var AgricolaPlayerResult = mongoose.model<IAgricolaPlayerResultModel>("AgricolaPlayerResult", agricolaPlayerResultSchema);

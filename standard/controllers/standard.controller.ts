@@ -79,7 +79,7 @@ export default class StandardController {
 
     public getAllGamesSummary(): Promise<GameResultSummary[]> {
         return new Promise((resolve, reject) => {
-            GameResult.find({}, {_id: 1, game: 1, 'playerResults.playerId': 1}, function(err, games) {
+            GameResult.find({}, {_id: 1, game: 1, 'playerResults.playerId': 1, 'playerResults.score': 1}, function(err, games) {
                 if (err) {
                     console.log('Got an error trying to get a subset of params: ' + err);
                     reject(err);
@@ -90,7 +90,7 @@ export default class StandardController {
                     for (let x: number = 0; x < games.length; x++) {
                         let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].game, games[x].date);
                         for (let y: number = 0; y < games[x].playerResults.length; y++) {
-                            newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId));
+                            newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId, games[x].playerResults[y].score));
                         }
                         
                         if (newVal === null) {

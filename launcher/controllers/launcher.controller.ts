@@ -52,10 +52,6 @@ export default class LauncherController {
                         console.error('GOT AN ERROR: ' + err);
                         reject(err);
                     }
-                    console.log('---------------------------------------------');
-                    console.log('ASYNC RESOLVED!!!!!!');
-                    console.log(JSON.stringify(results));
-                    console.log('---------------------------------------------');
 
                     let response: LauncherResult = new LauncherResult();
                     response.gameResults = new Array<GameResultSummary>();
