@@ -64,12 +64,8 @@ export default class StandardController {
                     console.error('Got an error trying to query all games: ' + err);
                     reject(err);
                 }
-
-                if (games) {
-                    resolve(games);
-                }
                 else {
-                    reject('No games found!');
+                    resolve(games);
                 }
                 
             });

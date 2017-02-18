@@ -25,5 +25,9 @@ export default class AgricolaRoutes {
                     res.status(500).send(err);
                 });
         });
-    }
+
+      app.put('agricola/begin', (req: express.Request, res: express.Response) => {
+        
+      })
+    };
 }
