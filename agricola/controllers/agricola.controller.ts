@@ -157,7 +157,7 @@ export default class AgricolaController {
                         console.log('The assigned id was: ' + newPlayer.id);
 
                         //now that we've created the player - add it to the game
-                        that.addPlayerToGame(_gameId, player) 
+                        that.addPlayerToGame(_gameId, newPlayer) 
                             .then(success => {
                                 resolve(success);
                             })
@@ -187,7 +187,11 @@ export default class AgricolaController {
                         }
                     }
 
-                    let newPlayerResult: IAgricolaPlayerResultModel = new AgricolaPlayerResult({ playerId: _player.id, score: 0});
+                    console.log('adding a new player with the id: ' + _player._id);
+
+                    let newPlayerResult: IAgricolaPlayerResultModel = new AgricolaPlayerResult({ playerId: _player._id, score: 0});
+
+                    console.log('created the agricola player result: ' + JSON.stringify(newPlayerResult));
                     game.playerResults.push(newPlayerResult);
 
                     game.save()
@@ -206,5 +210,56 @@ export default class AgricolaController {
             });
         });
     }
+
+    public getScore(_gameId: number): Promise<IAgricolaGameResultModel> {
+        return new Promise((resolve, reject) => {
+            let query = { _id: _gameId};
+            AgricolaGameResult.findOne(query, function(err, game) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(game);
+                }
+            });
+        });
+    }
+
+    public setScore(_gameId: number, _player: IAgricolaPlayerResultModel): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let query = {_id: _gameId};
+            AgricolaGameResult.findOne(query, function(err, game) {
+                if (err) {
+                    reject(err);
+                }
+                else if (game) {
+                    for (let x: number = 0; x < game.playerResults.length; x++) {
+                        let foundPlayer: boolean = false;
+                        if (game.playerResults[x].id === _player.id) {
+                            console.log('found a matching player!');
+                            foundPlayer = true;
+                            game.playerResults[x] = _player;
+                        }
+
+                        if (!foundPlayer) {
+                            //console.log('did not find a player in the game: ' + _player.id);
+                            game.playerResults.push(_player);
+                        }
+
+                        game.save()
+                            .then(response => {
+                                resolve(true);
+                            }, err => {
+                                resolve(true);
+                            });
+                    }
+                }
+                else {
+                    console.error('no game found for id: ' + _gameId);
+                    reject('No game found for id!');
+                }
+            });
+        });
+    };
 
 }

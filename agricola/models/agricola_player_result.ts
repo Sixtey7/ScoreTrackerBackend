@@ -21,6 +21,7 @@ interface IAgricolaPlayerResult extends IPlayerResult {
 
 interface IAgricolaPlayerResultModel extends IAgricolaPlayerResult, IPlayerResultModel, mongoose.Document{}
 var agricolaPlayerResultSchema = new mongoose.Schema({
+    playerId: String,
     fieldsNum: Number,
     pastureNum: Number,
     grainNum: Number,
