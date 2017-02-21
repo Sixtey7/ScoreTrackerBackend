@@ -228,37 +228,46 @@ export default class AgricolaController {
     public setScore(_gameId: number, _player: IAgricolaPlayerResultModel): Promise<boolean> {
         return new Promise((resolve, reject) => {
             let query = {_id: _gameId};
-            AgricolaGameResult.findOne(query, function(err, game) {
-                if (err) {
-                    reject(err);
-                }
-                else if (game) {
-                    for (let x: number = 0; x < game.playerResults.length; x++) {
-                        let foundPlayer: boolean = false;
-                        if (game.playerResults[x].id === _player.id) {
-                            console.log('found a matching player!');
-                            foundPlayer = true;
-                            game.playerResults[x] = _player;
-                        }
-
-                        if (!foundPlayer) {
-                            //console.log('did not find a player in the game: ' + _player.id);
-                            game.playerResults.push(_player);
-                        }
-
-                        game.save()
-                            .then(response => {
-                                resolve(true);
-                            }, err => {
-                                resolve(true);
-                            });
+            if (_player) {
+                AgricolaGameResult.findOne(query, function(err, game) {
+                    if (err) {
+                        reject(err);
                     }
-                }
-                else {
-                    console.error('no game found for id: ' + _gameId);
-                    reject('No game found for id!');
-                }
-            });
+                    else if (game) {
+                        for (let x: number = 0; x < game.playerResults.length; x++) {
+                            let foundPlayer: boolean = false;
+                            if (game.playerResults[x].playerId === _player.playerId) {
+                                console.log('found a matching player!');
+                                foundPlayer = true;
+                                game.playerResults[x] = _player;
+                            }
+
+                            if (!foundPlayer) {
+                                console.log('creating new player for\n' + JSON.stringify(_player));
+                                console.log('did not find a player in the game: ' + _player.id);
+                                game.playerResults.push(_player);
+                            }
+
+                            game.save()
+                                .then(response => {
+                                    console.log('successfully saved the game!');
+                                    resolve(true);
+                                }, err => {
+                                    console.log('Got an error trying to save the game!\n' + err);
+                                    resolve(false);
+                                });
+                        }
+                    }
+                    else {
+                        console.error('no game found for id: ' + _gameId);
+                        reject('No game found for id!');
+                    }
+                });
+            }
+            else {
+                console.error('NULL Player Received in setScore!');
+                reject('null player');
+            }
         });
     };
 
