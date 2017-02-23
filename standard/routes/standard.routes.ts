@@ -64,6 +64,7 @@ export default class StandardRoutes {
         });
 
         app.get('/standard/players', (req: express.Request, res: express.Response) => {
+            console.log('returning all players!');
             if (req.query.playerIds !== undefined) {
                 this.controller.getPlayers(req.query.playerIds)
                     .then(response => {
@@ -77,6 +78,16 @@ export default class StandardRoutes {
                 res.status(400).send('playerIds is a required parameter!');
             }
         });
+
+        app.get('/standard/allPlayers', (req: express.Request, res: express.Response) => {
+            this.controller.getAllPlayers()
+                .then(response => {
+                    res.status(200).send(response);
+                })
+                .catch(err => {
+                    res.status(500).send(err);
+                })
+        })
 
         app.get('/standard/allGames', (req: express.Request, res:express.Response) => {
             this.controller.getAllGames()
