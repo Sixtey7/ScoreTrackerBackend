@@ -284,13 +284,11 @@ export default class AgricolaController {
                     if (game) {
                         // need to match up the player results objects
                         for (let clientCounter: number = 0; clientCounter < playerArray.length; clientCounter++) {
-                            //try to find the player in the results collection
+                            //try to find the player in the results collection (to get the id)
                             let foundPlayer: boolean = false;
                             let serverResultCounter: number = -1;
                             for (serverResultCounter = 0; serverResultCounter < game.playerResults.length; serverResultCounter++) {
-                                //TODO: This is hacky - technially the front end is publishing a AgricolaPlayer (NOT a result)
-                                //but I'm cheating using the fact that they have all the same fields, so client player.id is actually serverPlayerResult.playerId
-                                if (game.playerResults[serverResultCounter].playerId === playerArray[clientCounter].id) {
+                                if (game.playerResults[serverResultCounter].playerId === playerArray[clientCounter].playerId) {
                                     foundPlayer = true;
                                     break;
                                 }
@@ -299,7 +297,10 @@ export default class AgricolaController {
                             if (foundPlayer) {
                                 //copy over all of the results
                                 console.log('copying results!');
-                                game.playerResults[serverResultCounter] = that.copyClientPlayerToServerResult(playerArray[clientCounter], game.playerResults[serverResultCounter]);
+                                //set the ids based on the server object
+                                playerArray[clientCounter]._id = game.playerResults[serverResultCounter]._id;
+                                playerArray[clientCounter].id = game.playerResults[serverResultCounter].id;
+                                game.playerResults[serverResultCounter] = playerArray[clientCounter];
                             } else {
                                 console.log('creating a new player for id: ' + playerArray[clientCounter].id);
                                 let newServerPlayer: IAgricolaPlayerResultModel = new AgricolaPlayerResult();
