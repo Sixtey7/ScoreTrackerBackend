@@ -154,5 +154,24 @@ export default class AgricolaRoutes {
             }
         });
 
+        app.post('/agricola/save', (req: express.Request, res: express.Response) => {
+            if (req.query.gameId !== undefined) {
+                let newPlayerArray: IAgricolaPlayerResultModel[] = req.body;
+                if (newPlayerArray) {
+                    console.log('Parsed the following:\n' + JSON.stringify(newPlayerArray));
+
+                    this.controller.saveGame(req.query.gameId, newPlayerArray);
+                    res.status(200).end();
+                }
+                else {
+                    console.error('Failed to parse the new player array in the body!');
+                    res.status(400).send('Failed to parse the player array!');
+                }
+            }
+            else {
+                res.status(400).send('gameId is a required parameter!');
+            }
+        })
+
     }
 }

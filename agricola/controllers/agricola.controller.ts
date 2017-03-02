@@ -271,4 +271,79 @@ export default class AgricolaController {
         });
     };
 
+    public saveGame(gameId: string, playerArray: IAgricolaPlayerResultModel[]) : Promise<boolean>{
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let query = { _id: gameId };
+            AgricolaGameResult.findOne(query, function(err, game) {
+                if (err) {
+                    console.error('Got an error attempting to find game with id: ' + gameId + '\n' + err);
+                    reject(err);
+                }
+                else {
+                    if (game) {
+                        // need to match up the player results objects
+                        for (let clientCounter: number = 0; clientCounter < playerArray.length; clientCounter++) {
+                            //try to find the player in the results collection
+                            let foundPlayer: boolean = false;
+                            let serverResultCounter: number = -1;
+                            for (serverResultCounter = 0; serverResultCounter < game.playerResults.length; serverResultCounter++) {
+                                //TODO: This is hacky - technially the front end is publishing a AgricolaPlayer (NOT a result)
+                                //but I'm cheating using the fact that they have all the same fields, so client player.id is actually serverPlayerResult.playerId
+                                if (game.playerResults[serverResultCounter].playerId === playerArray[clientCounter].id) {
+                                    foundPlayer = true;
+                                    break;
+                                }
+                            }
+
+                            if (foundPlayer) {
+                                //copy over all of the results
+                                console.log('copying results!');
+                                game.playerResults[serverResultCounter] = that.copyClientPlayerToServerResult(playerArray[clientCounter], game.playerResults[serverResultCounter]);
+                            } else {
+                                console.log('creating a new player for id: ' + playerArray[clientCounter].id);
+                                let newServerPlayer: IAgricolaPlayerResultModel = new AgricolaPlayerResult();
+                                game.playerResults.push(that.copyClientPlayerToServerResult(playerArray[clientCounter], newServerPlayer));
+                            }
+                        }
+                        
+                        game.save()
+                            .then(response => {
+                                    console.log('successfully saved the game!');
+                                    resolve(true);
+                                }, err => {
+                                    console.log('Got an error trying to save the game!\n' + err);
+                                    resolve(false);
+                                }
+                            );
+
+                    }
+                    else {
+                        console.error('No game found for gameId: ' + gameId);
+                        reject('Nogame found for id: ' + gameId);
+                    }
+                }
+            });
+        });
+    }
+
+    private copyClientPlayerToServerResult(clientPlayer: IAgricolaPlayerResultModel, serverPlayer: IAgricolaPlayerResultModel): IAgricolaPlayerResultModel {
+        serverPlayer.bonusNum = clientPlayer.bonusNum;
+        serverPlayer.cardNum = clientPlayer.cardNum;
+        serverPlayer.clayNum = clientPlayer.clayNum;
+        serverPlayer.cowNum = clientPlayer.cowNum;
+        serverPlayer.familyNum = clientPlayer.familyNum;
+        serverPlayer.fieldsNum = clientPlayer.fieldsNum;
+        serverPlayer.grainNum = clientPlayer.grainNum;
+        serverPlayer.pastureNum = clientPlayer.pastureNum;
+        serverPlayer.pigNum = clientPlayer.pigNum;
+        serverPlayer.sheepNum = clientPlayer.sheepNum;
+        serverPlayer.stableNum = clientPlayer.stableNum;
+        serverPlayer.stoneNum = clientPlayer.stoneNum;
+        serverPlayer.vegNum = clientPlayer.vegNum;
+        serverPlayer.score = clientPlayer.score;
+    
+        return serverPlayer;
+    }
+
 }
