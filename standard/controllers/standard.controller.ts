@@ -26,7 +26,7 @@ export default class StandardController {
             else {
                 gameDate = new Date();
             }
-            let gameResult: IGameResultModel = new GameResult({ game: _gameType, date: gameDate});
+            let gameResult: IGameResultModel = new GameResult({ game: GameList[_gameType], date: gameDate});
             gameResult.save()
                 .then(response => {
                     resolve(gameResult);
@@ -271,6 +271,62 @@ export default class StandardController {
                     reject('No game found for given id (' + _gameId + ')');
                 }
             })
+        });
+    }
+
+    public saveGame(gameId: string, playerArray: IPlayerResultModel[]) : Promise<boolean>{
+        let that = this;
+
+        return new Promise((resolve, reject) => {
+            let query = { _id: gameId };
+            GameResult.findOne(query, function(err, game) {
+                if (err) {
+                    console.error('Got an error trying to find the game with game id: ' + gameId + '\n' + err);
+                    reject(err);
+                }
+                else {
+                    if (game) {
+                        //need to match up the player results object
+                        for (let clientCounter: number = 0; clientCounter < playerArray.length; clientCounter++) {
+                            let foundPlayer: boolean = false;
+                            let serverResultCounter: number = -1;
+                            for (serverResultCounter = 0; serverResultCounter < game.playerResults.length; serverResultCounter++) {
+                                if (game.playerResults[serverResultCounter].playerId === playerArray[clientCounter].playerId) {
+                                    foundPlayer = true;
+                                    break;
+                                }
+                            }
+
+                            if (foundPlayer) {
+                                console.log('copying score');
+                                game.playerResults[serverResultCounter].score = playerArray[clientCounter].score;
+                            }
+                            else {
+                                console.log('creating a new player for id: ' + playerArray[clientCounter]._id);
+                                let newServerPlayer: IPlayerResultModel = new PlayerResult();
+                                newServerPlayer.playerId = playerArray[clientCounter].playerId;
+                                newServerPlayer.score = playerArray[clientCounter].score;
+                                game.playerResults.push(newServerPlayer);
+                            }
+                        }
+
+                        game.save()
+                            .then(response => {
+                                console.log('Successfully saved the game!');
+                                resolve(true);
+                            },
+                            err => {
+                                console.error('got an error attempting to save the game:\n' + err);
+                                resolve(false);
+                            }
+                        );
+                    }
+                    else {
+                        console.error('no game found for gameId: ' + gameId);
+                        reject('no game found for id: ' + gameId);
+                    }
+                }
+            });
         });
     }
 }

@@ -181,9 +181,30 @@ export default class StandardRoutes {
             }
         });
 
-        app.post('/standard/saveSession', (req:express.Request, res: express.Response) => {
-            //TODO: need to determine if this is needed, or if we'll just always be saving
-            res.status(400).send('Don\'t use this!');
-        })
+        app.post('/standard/save', (req:express.Request, res: express.Response) => {
+            if (req.query.gameId !== undefined) {
+                let newPlayerArray: IPlayerResultModel[] = req.body;
+                if (newPlayerArray) {
+                    console.log('Parsed the following:\n' + JSON.stringify(newPlayerArray));
+
+                    this.controller.saveGame(req.query.gameId, newPlayerArray)
+                        .then(response => {
+                            res.status(200).end();
+                        })
+                        .catch(err => {
+                            console.error('got an error from the standard controller trying to save the game\n' + err);
+                            res.status(500).end();
+                        })
+                }
+                else {
+                    console.error('Failed to parse a player array in the body');
+                    res.status(400).send('Could not parse the body');
+                }
+            }
+            else {
+                console.error('No gameId in request to /standard/save');
+                res.status(400).send('gameId is a required parameter');
+            }
+        });
     }  
 }
