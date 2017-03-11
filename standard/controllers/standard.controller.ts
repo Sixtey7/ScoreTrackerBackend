@@ -7,6 +7,8 @@ import {
     IGameResultModel,
     GameList,
     GameResultSummary,
+    IGameDefModel,
+    GameDef,
     PlayerResultSummary
 } from '../../shared/shared';
 
@@ -327,6 +329,22 @@ export default class StandardController {
                     }
                 }
             });
+        });
+    }
+
+    public addGame(gameName: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let newGame: IGameDefModel = new GameDef({name: gameName});
+
+            newGame.save()
+                .then(response => {
+                    console.log('successfully added the game def');
+                    resolve(true)
+                }, 
+                err => {
+                    console.error('got an error attempting to save a new game\n' + err);
+                    reject(err);
+                });
         });
     }
 }
