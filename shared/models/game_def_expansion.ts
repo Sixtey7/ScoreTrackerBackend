@@ -4,7 +4,7 @@ interface IGameDefExpansion {
     name: string;
 }
 
-interface IGameDefExpansionModel extends mongoose.Document{}
+interface IGameDefExpansionModel extends IGameDefExpansion, mongoose.Document{}
 var gameDefExpansionSchema = new mongoose.Schema({
     name: String
 });

@@ -9,6 +9,8 @@ import {
     GameResultSummary,
     IGameDefModel,
     GameDef,
+    IGameDefExpansionModel,
+    GameDefExpansion,
     PlayerResultSummary
 } from '../../shared/shared';
 
@@ -347,4 +349,47 @@ export default class StandardController {
                 });
         });
     }
-}
+
+    public addExpansionToGame(_gameDefId: number, _expansionName: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let query = { _id: _gameDefId };
+            GameDef.findOne(query, function(err, gameDef) {
+                if (err) {
+                    console.error('Got an error attempting to find GameDef with ID: ' + _gameDefId);
+                    reject(err);
+                }
+                else {
+                    if (gameDef) { 
+                        //double check that the expansion hasn't already been added
+                        let found: boolean = false;
+                        for (let x: number = 0; x < gameDef.expansions.length; x++) {
+                            if (gameDef.expansions[x].name === _expansionName) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) {
+                            console.error('Add expansion for game was called to add: ' + _expansionName + ' to game: ' + _gameDefId + ' -- expansion was already added!');
+                            reject('expansion already added!');
+                        }
+                        else {
+                            let newExpansion: IGameDefExpansionModel = new GameDefExpansion({name: _expansionName});
+                            gameDef.expansions.push(newExpansion);
+
+                            gameDef.save()
+                                .then(response => {
+                                    console.log('got the response from saving the game def:\n' + response);
+                                    resolve(true);
+                                },
+                                err => {
+                                    console.error('got an error from attempting to save the game def:\n' + err);
+                                    reject(err);
+                                });                            
+                        }
+                    }
+                }
+            });
+        });
+    }
+ }

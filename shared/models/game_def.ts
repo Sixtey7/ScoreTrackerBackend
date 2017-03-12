@@ -2,12 +2,12 @@ import * as mongoose from 'mongoose';
 
 import { gameDefExpansionSchema, IGameDefExpansionModel } from './game_def_expansion';
 
-interface GameDef {
+interface IGameDef {
     name: string,
     expansions: IGameDefExpansionModel[];
 }
 
-interface IGameDefModel extends mongoose.Document{}
+interface IGameDefModel extends IGameDef, mongoose.Document{}
 
 var gameDefSchema = new mongoose.Schema({
     name: String,
