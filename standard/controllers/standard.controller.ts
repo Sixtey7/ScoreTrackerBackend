@@ -334,7 +334,7 @@ export default class StandardController {
         });
     }
 
-    public addGame(gameName: string): Promise<boolean> {
+    public addGameDef(gameName: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             let newGame: IGameDefModel = new GameDef({name: gameName});
 

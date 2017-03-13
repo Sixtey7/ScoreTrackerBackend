@@ -206,5 +206,22 @@ export default class StandardRoutes {
                 res.status(400).send('gameId is a required parameter');
             }
         });
+
+        app.post('/standard/addGameDef', (req:express.Request, res: express.Response) => {
+            if (req.query.gameName !== undefined) {
+                this.controller.addGameDef(req.query.gameName)
+                    .then(response => {
+                        res.status(200).end();
+                    })
+                    .catch(err => {
+                        console.error('got an error from the standard controller trying to add a game def\n' + err);
+                        res.status(500).send(err);
+                    });
+            }
+            else {
+                console.log('no game name in /standard/addGameDef');
+                res.status(400).send('gameName is a required parameter');
+            }
+        });
     }  
 }
