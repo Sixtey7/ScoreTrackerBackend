@@ -223,5 +223,29 @@ export default class StandardRoutes {
                 res.status(400).send('gameName is a required parameter');
             }
         });
-    }  
+
+        app.post('/standard/addGameDefExpansion', (req: express.Request, res: express.Response) => {
+            if (req.query.gameDefId !== undefined) {
+                if (req.query.expansionName !== undefined) {
+                    this.controller.addExpansionToGame(req.query.gameDefId, req.query.expansionName)
+                        .then(response => {
+                            res.status(200).end();
+                        })
+                        .catch(err => {
+                            console.error('got an error attempting to add expansion: ' + req.query.expansionName + ' to game def ' + req.query.gameDefId);
+                            res.status(500).send(err);
+                        });
+                }
+                else {
+                    console.error('no expansionName in request to addGameDefExpansion');
+                    res.status(400).send('expansionName is a required parameter!');
+                }
+            }
+            else {
+                console.error('no gameDefId in request to addGameDefExpansion');
+                res.status(400).send('gameDefId is a required parameter!');
+            }
+        });
+    } 
+     
 }
