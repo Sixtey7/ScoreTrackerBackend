@@ -350,6 +350,21 @@ export default class StandardController {
         });
     }
 
+    public getAllGameDefs(): Promise<IGameDefModel[]> {
+        return new Promise((resolve, reject) => {
+
+            GameDef.find({}, function(err, gameDefs) {
+                if (err) {
+                    console.error('Got an error attempting to get all game defs\n' + err);
+                    reject(err);
+                }
+                else {
+                    resolve(gameDefs);
+                }
+            });
+        });
+    };
+
     public addExpansionToGame(_gameDefId: number, _expansionName: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             let query = { _id: _gameDefId };
