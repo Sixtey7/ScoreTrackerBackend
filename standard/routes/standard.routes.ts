@@ -246,6 +246,16 @@ export default class StandardRoutes {
                 res.status(400).send('gameDefId is a required parameter!');
             }
         });
+
+        app.get('/standard/allGameDefs', (req: express.Request, res:express.Response) => {
+            this.controller.getAllGameDefs()
+                .then(response => {
+                    res.status(200).send(response);
+                })
+                .catch(err => {
+                    res.status(500).send(err);
+                });
+        });
     } 
      
 }
