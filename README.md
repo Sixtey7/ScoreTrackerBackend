@@ -13,3 +13,6 @@ Eventually plan to combine this repo with ScoreTrackerAng2, but for now building
 ## Future Plan
 + Pandemic
     - Requires a board can win scenario
+
+## Author
+Patrick Shaw
