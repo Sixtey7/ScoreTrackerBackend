@@ -21,7 +21,7 @@ export default class StandardController {
     }
 
 
-    public startGame(_gameType: GameList, _date?: number): Promise<IGameResultModel> {
+    public startGame(_gameDef: string | number, _date?: number): Promise<IGameResultModel> {
         return new Promise((resolve, reject) => {
             let gameDate: Date;
             if (_date) {
@@ -30,7 +30,7 @@ export default class StandardController {
             else {
                 gameDate = new Date();
             }
-            let gameResult: IGameResultModel = new GameResult({ game: GameList[_gameType], date: gameDate});
+            let gameResult: IGameResultModel = new GameResult({ gameDefId: _gameDef, date: gameDate});
             gameResult.save()
                 .then(response => {
                     resolve(gameResult);
@@ -88,7 +88,7 @@ export default class StandardController {
                 if (games) {
                     let returnVal: GameResultSummary[] = new Array<GameResultSummary>();
                     for (let x: number = 0; x < games.length; x++) {
-                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].game, games[x].date);
+                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].gameDefId, games[x].date);
                         for (let y: number = 0; y < games[x].playerResults.length; y++) {
                             newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId, games[x].playerResults[y].score));
                         }

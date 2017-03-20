@@ -95,7 +95,8 @@ export default class AgricolaController {
                 if (games) {
                     let returnVal: GameResultSummary[] = new Array<GameResultSummary>();
                     for (let x: number = 0; x < games.length; x++) {
-                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].game, games[x].date);
+                        //TODO: Need to determine the id for agricola game
+                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, 12345, games[x].date);
                         for (let y = 0; y < games[x].playerResults.length; y++) {
                             newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId, games[x].playerResults[y].score));
                         }

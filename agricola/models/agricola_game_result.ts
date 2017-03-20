@@ -4,7 +4,7 @@ import { agricolaPlayerResultSchema, IAgricolaPlayerResultModel } from './agrico
 import { GameList } from '../../shared/shared';
 
 interface IAgricolaGameResult {
-    game: GameList;
+    gameDefId: string | number;
     date: Date;
     playerResults: IAgricolaPlayerResultModel[];
 }

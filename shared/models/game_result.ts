@@ -5,7 +5,7 @@ import { GameList } from '../enums/game_list.enum';
 import { IPlayerModel } from './player';
 
 interface IGameResult {
-    game: GameList;
+    gameDefId: string | number;
     date: Date;
     playerResults: IPlayerResultModel[];
 }
