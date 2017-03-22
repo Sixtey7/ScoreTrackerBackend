@@ -43,7 +43,9 @@ export default class AgricolaController {
                 gameDate = new Date();
             }
 
-            let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ game: GameList.AGRICOLA, date: gameDate});
+            //TODO: need to determine the game def id of the agricola entry
+            let agricolaGameDefId: number = this.findAgricolaGameDefId();
+            let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ gameDefId: agricolaGameDefId, date: gameDate});
             gameResult.save()
                 .then(response => {
                     resolve(gameResult);
@@ -327,6 +329,11 @@ export default class AgricolaController {
                 }
             });
         });
+    }
+
+    private findAgricolaGameDefId(): number {
+        //TODO: Implement
+        return 12345;
     }
 
     private copyClientPlayerToServerResult(clientPlayer: IAgricolaPlayerResultModel, serverPlayer: IAgricolaPlayerResultModel): IAgricolaPlayerResultModel {

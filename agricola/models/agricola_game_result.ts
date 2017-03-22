@@ -12,7 +12,7 @@ interface IAgricolaGameResult {
 interface IAgricolaGameResultModel extends IAgricolaGameResult, mongoose.Document{}
 
 var agricolaGameResultSchema = new mongoose.Schema({
-    game: String,
+    gameDefId: String,
     date: { type: Date, default: Date.now },
     playerResults: [agricolaPlayerResultSchema]
 });
