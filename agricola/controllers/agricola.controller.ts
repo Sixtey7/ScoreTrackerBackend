@@ -44,15 +44,20 @@ export default class AgricolaController {
             }
 
             //TODO: need to determine the game def id of the agricola entry
-            let agricolaGameDefId: number = this.findAgricolaGameDefId();
-            let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ gameDefId: agricolaGameDefId, date: gameDate});
-            gameResult.save()
-                .then(response => {
-                    resolve(gameResult);
-                }, err => {
-                    reject(err);
-                }
-            );
+            this.findAgricolaGameDefId().then(agricolaGameId => {
+                let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ gameDefId: agricolaGameId, date: gameDate});
+                gameResult.save()
+                    .then(response => {
+                        resolve(gameResult);
+                    }, err => {
+                        reject(err);
+                    }
+                );
+            })
+            .catch(error => {
+                console.error('Got an error attempting to get the agricola game id:\n' + error);
+                reject(error);
+            })
         })
     }
 
@@ -331,9 +336,12 @@ export default class AgricolaController {
         });
     }
 
-    private findAgricolaGameDefId(): number {
-        //TODO: Implement
-        return 12345;
+    private findAgricolaGameDefId(): Promise<number> {
+        return new Promise((resolve, reject) => {
+            //TODO: Implement this
+            //TODO: Should likely cache this value and not query the database everytime
+            resolve(12345);
+        });
     }
 
     private copyClientPlayerToServerResult(clientPlayer: IAgricolaPlayerResultModel, serverPlayer: IAgricolaPlayerResultModel): IAgricolaPlayerResultModel {
