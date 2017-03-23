@@ -6,6 +6,7 @@ import {
     GameResult,
     IGameResultModel,
     GameList,
+    ScoringType,
     GameResultSummary,
     IGameDefModel,
     GameDef,
@@ -334,9 +335,9 @@ export default class StandardController {
         });
     }
 
-    public addGameDef(gameName: string): Promise<boolean> {
+    public addGameDef(_gameName: string, _scoringType: ScoringType): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            let newGame: IGameDefModel = new GameDef({name: gameName});
+            let newGame: IGameDefModel = new GameDef({name: _gameName, scoringType: _scoringType});
 
             newGame.save()
                 .then(response => {
