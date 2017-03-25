@@ -6,6 +6,7 @@ import {
     IPlayerResultModel,
     IGameResultModel,
     GameList,
+    ScoringType,
     TotalResult
 } from '../../shared/shared';
 
@@ -209,14 +210,21 @@ export default class StandardRoutes {
 
         app.post('/standard/addGameDef', (req:express.Request, res: express.Response) => {
             if (req.query.gameName !== undefined) {
-                this.controller.addGameDef(req.query.gameName)
-                    .then(response => {
-                        res.status(200).end();
-                    })
-                    .catch(err => {
-                        console.error('got an error from the standard controller trying to add a game def\n' + err);
-                        res.status(500).send(err);
-                    });
+                if (req.query.scoringType !== undefined) {
+                    let scoreType: ScoringType = ScoringType[ScoringType[req.query.scoringType]];
+                    this.controller.addGameDef(req.query.gameName, scoreType)
+                        .then(response => {
+                            res.status(200).end();
+                        })
+                        .catch(err => {
+                            console.error('got an error from the standard controller trying to add a game def\n' + err);
+                            res.status(500).send(err);
+                        });
+                }
+                else {
+                    console.log('no scoring type in /standard/addGameDef');
+                    res.status(400).send('scoringType is a required parameter!');
+                }
             }
             else {
                 console.log('no game name in /standard/addGameDef');
