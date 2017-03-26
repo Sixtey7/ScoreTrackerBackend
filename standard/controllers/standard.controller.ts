@@ -22,7 +22,8 @@ export default class StandardController {
     }
 
 
-    public startGame(_gameDef: string | number, _date?: number): Promise<IGameResultModel> {
+    public startGame(_gameDefId: string | number, _date?: number): Promise<IGameResultModel> {
+        console.log('starting a new game with def id: ' + _gameDefId);
         return new Promise((resolve, reject) => {
             let gameDate: Date;
             if (_date) {
@@ -31,7 +32,7 @@ export default class StandardController {
             else {
                 gameDate = new Date();
             }
-            let gameResult: IGameResultModel = new GameResult({ gameDefId: _gameDef, date: gameDate});
+            let gameResult: IGameResultModel = new GameResult({ gameDefId: _gameDefId, date: gameDate});
             gameResult.save()
                 .then(response => {
                     resolve(gameResult);

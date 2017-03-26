@@ -33,34 +33,39 @@ export default class StandardRoutes {
         app.put('/standard/begin', (req: express.Request, res: express.Response) => {
             console.log('Starting a game!');
 
-            if (req.query.gameName !== undefined) {
-                let gameToStart: GameList = GameList[GameList[req.query.gameName]];
-                console.log('Determined the enum: ' + gameToStart.toString());
-                if (gameToStart !== null) {
-                    if (req.query.date !== undefined) {
-                        this.controller.startGame(gameToStart, req.query.date);
-                    }
-                    else {
-                            this.controller.startGame(gameToStart)
-                                .then(response => {
-                                    if (response) {
-                                        res.status(200).send(response.id);
-                                    }
-                                    else {
-                                        res.status(500).send('failed to save game in database');
-                                    }
-                                })
-                                .catch(err => {
-                                    res.status(500).send(err);
-                                });
-                        }
-                    }
+            if (req.query.gameDefId !== undefined) {
+                if (req.query.date !== undefined) {
+                    this.controller.startGame(req.query.gameDefId, req.query.date)
+                        .then(response => {
+                            if (response) {
+                                res.status(200).send(response._id);
+                            }
+                            else {
+                                res.status(500).send('failed to save game in database!');
+                            }
+                        })
+                        .catch(err => {
+                            console.error('got an error attempting to save a game in the database:\n' + err);
+                            res.status(500).send(err);
+                        })
+                }
                 else {
-                    res.status(400).send('gameName: ' + req.query.gameName + ' was not a valid game!');
+                    this.controller.startGame(req.query.gameDefId)
+                        .then(response => {
+                            if (response) {
+                                res.status(200).send(response.id);
+                            }
+                            else {
+                                res.status(500).send('failed to save game in database');
+                            }
+                        })
+                        .catch(err => {
+                            res.status(500).send(err);
+                        });
                 }
             }
             else {
-                res.status(400).send('gameName is a required parameter!');
+                res.status(400).send('gameDefId is a required parameter!');
             }
         });
 

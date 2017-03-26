@@ -13,7 +13,7 @@ interface IGameResult {
 interface IGameResultModel extends IGameResult, mongoose.Document{}
 
 var gameResultSchema = new mongoose.Schema({
-    game: String,
+    gameDefId: String,
     date: { type: Date, default: Date.now },
     playerResults: [playerResultSchema]
 });
