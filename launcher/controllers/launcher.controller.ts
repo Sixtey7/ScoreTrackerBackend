@@ -39,11 +39,6 @@ export default class LauncherController {
                     this.agricolaController.getAllGamesSummary()
                         .then(response => callback(null, response))
                         .catch(err => callback(err, null));
-                },
-                players: (callback) => {
-                    this.standardController.getAllPlayers()
-                        .then(response => callback(null, response))
-                        .catch(err => callback(err, null));
                 }
             },
                 function(err, results) {
@@ -57,7 +52,6 @@ export default class LauncherController {
                     response.gameResults = new Array<GameResultSummary>();
                     
                     response.gameResults = results['standard'].concat(results['agricola']);
-                    response.players = results['players'];
 
                     resolve(response);
                 }

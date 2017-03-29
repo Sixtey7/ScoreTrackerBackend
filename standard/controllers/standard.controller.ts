@@ -81,7 +81,7 @@ export default class StandardController {
 
     public getAllGamesSummary(): Promise<GameResultSummary[]> {
         return new Promise((resolve, reject) => {
-            GameResult.find({}, {_id: 1, game: 1, 'playerResults.playerId': 1, 'playerResults.score': 1}, function(err, games) {
+            GameResult.find({}, {_id: 1, game: 1, gameDefId: 1, date: 1, 'playerResults.playerId': 1, 'playerResults.score': 1}, function(err, games) {
                 if (err) {
                     console.log('Got an error trying to get a subset of params: ' + err);
                     reject(err);

@@ -93,7 +93,7 @@ export default class AgricolaController {
 
     public getAllGamesSummary(): Promise<GameResultSummary[]> {
         return new Promise((resolve, reject) =>  {
-            AgricolaGameResult.find({}, {_id: 1, game: 1, date: 1, 'playerResults.playerId': 1, 'playerResults.score': 1}, function(err, games) {
+            AgricolaGameResult.find({}, {_id: 1, game: 1, gameDefId: 1, date: 1, 'playerResults.playerId': 1, 'playerResults.score': 1}, function(err, games) {
                 if (err) {
                     console.log('Got an error trying to get a subset of params: ' + err);
                     reject(err);
@@ -103,7 +103,7 @@ export default class AgricolaController {
                     let returnVal: GameResultSummary[] = new Array<GameResultSummary>();
                     for (let x: number = 0; x < games.length; x++) {
                         //TODO: Need to determine the id for agricola game
-                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, 12345, games[x].date);
+                        let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].gameDefId, games[x].date);
                         for (let y = 0; y < games[x].playerResults.length; y++) {
                             newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId, games[x].playerResults[y].score));
                         }
