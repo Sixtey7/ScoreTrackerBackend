@@ -1,6 +1,6 @@
 enum ScoringType {
     AGRICOLA,
-    STANDARD
+    PLAYER_SCORE
 }
 
 export {
