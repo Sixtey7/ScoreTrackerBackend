@@ -35,26 +35,31 @@ export default class AgricolaRoutes {
 
         app.put('/agricola/begin', (req: express.Request, res: express.Response) => {
             console.log('starting a new agricola game');
-
-            if (req.query.date !== undefined) {
-                this.controller.startGame(req.query.date)
-                    .then(response => {
-                        res.status(200).send(response.id);
-                    })
-                    .catch(err => {
-                        console.error('got an error attempting to start a new game: ' + err);
-                        res.status(500).send(err);
-                    });
+            if (req.query.gameDefId !== undefined) {
+                if (req.query.date !== undefined) {
+                    this.controller.startGame(req.query.gameDefId, req.query.date)
+                        .then(response => {
+                            res.status(200).send(response.id);
+                        })
+                        .catch(err => {
+                            console.error('got an error attempting to start a new game: ' + err);
+                            res.status(500).send(err);
+                        });
+                }
+                else {
+                    this.controller.startGame(req.query.gameDefId)
+                        .then(response => {
+                            res.status(200).send(response.id);
+                        })
+                        .catch(err => {
+                            console.error('got an error attempting to start a new game: ' + err);
+                            res.status(500).send(err);
+                        });
+                }
             }
             else {
-                this.controller.startGame()
-                    .then(response => {
-                        res.status(200).send(response.id);
-                    })
-                    .catch(err => {
-                        console.error('got an error attempting to start a new game: ' + err);
-                        res.status(500).send(err);
-                    });
+                console.error('no game def id provided in begin!');
+                res.status(500).error('gameDefId is a required parameter!');
             }
         });
 

@@ -33,7 +33,7 @@ export default class AgricolaController {
         });
     }
 
-    public startGame(_date?: number): Promise<IAgricolaGameResultModel> {
+    public startGame(_gameDefId: string, _date?: number): Promise<IAgricolaGameResultModel> {
         return new Promise((resolve, reject) => {
             let gameDate: Date;
             if (_date) {
@@ -43,21 +43,14 @@ export default class AgricolaController {
                 gameDate = new Date();
             }
 
-            //TODO: need to determine the game def id of the agricola entry
-            this.findAgricolaGameDefId().then(agricolaGameId => {
-                let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ gameDefId: agricolaGameId, date: gameDate});
-                gameResult.save()
-                    .then(response => {
-                        resolve(gameResult);
-                    }, err => {
-                        reject(err);
-                    }
-                );
-            })
-            .catch(error => {
-                console.error('Got an error attempting to get the agricola game id:\n' + error);
-                reject(error);
-            })
+            let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ gameDefId: _gameDefId, date: gameDate});
+            gameResult.save()
+                .then(response => {
+                    resolve(gameResult);
+                }, err => {
+                    reject(err);
+                }
+            );
         })
     }
 
@@ -333,14 +326,6 @@ export default class AgricolaController {
                     }
                 }
             });
-        });
-    }
-
-    private findAgricolaGameDefId(): Promise<number> {
-        return new Promise((resolve, reject) => {
-            //TODO: Implement this
-            //TODO: Should likely cache this value and not query the database everytime
-            resolve(12345);
         });
     }
 
