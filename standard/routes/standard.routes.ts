@@ -35,7 +35,7 @@ export default class StandardRoutes {
 
             if (req.query.gameDefId !== undefined) {
                 if (req.query.date !== undefined) {
-                    this.controller.startGame(req.query.gameDefId, req.query.date)
+                    this.controller.startGameOld(req.query.gameDefId, req.query.date)
                         .then(response => {
                             if (response) {
                                 res.status(200).send(response._id);
