@@ -30,7 +30,7 @@ export default class StandardRoutes {
             res.status(200).send(this.controller.sayHello());
         });
 
-        app.put('/standard/begin', (req: express.Request, res: express.Response) => {
+        app.put('/standard/beginOld', (req: express.Request, res: express.Response) => {
             console.log('Starting a game!');
 
             if (req.query.gameDefId !== undefined) {
@@ -50,7 +50,7 @@ export default class StandardRoutes {
                         })
                 }
                 else {
-                    this.controller.startGame(req.query.gameDefId)
+                    this.controller.startGameOld(req.query.gameDefId)
                         .then(response => {
                             if (response) {
                                 res.status(200).send(response.id);
@@ -68,6 +68,26 @@ export default class StandardRoutes {
                 res.status(400).send('gameDefId is a required parameter!');
             }
         });
+
+        app.put('/standard/begin', (req: express.Request, res: express.Response) => {
+            let bodyGame: IGameResultModel = req.body;
+            //TODO
+
+            if (bodyGame) {
+                this.controller.startGame(bodyGame)
+                    .then(response => {
+                        res.status(200).send(response.id)
+                    })
+                    .catch(err => {
+                        console.error('got an error attempting to start a game\n' + err);
+                        res.status(500).send(err);
+                    })
+            }
+            else {
+                console.error('no game was provided in /standard/begin');
+                res.status(400).send('ServerGame is a required body parameter')
+            }
+        })
 
         app.get('/standard/players', (req: express.Request, res: express.Response) => {
             console.log('returning all players!');

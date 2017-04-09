@@ -22,7 +22,7 @@ export default class StandardController {
     }
 
 
-    public startGame(_gameDefId: string | number, _date?: number): Promise<IGameResultModel> {
+    public startGameOld(_gameDefId: string | number, _date?: number): Promise<IGameResultModel> {
         console.log('starting a new game with def id: ' + _gameDefId);
         return new Promise((resolve, reject) => {
             let gameDate: Date;
@@ -41,6 +41,23 @@ export default class StandardController {
                 });
         });
     }
+
+    public startGame(_gameContents: IGameResultModel): Promise<IGameResultModel> {
+        return new Promise((resolve, reject) => {
+            let newGameResult: IGameResultModel = new GameResult({
+                gameDefId: _gameContents.gameDefId,
+                date: _gameContents.date,
+                expansions: _gameContents.expansions
+            });
+
+            newGameResult.save()
+                .then(response => {
+                    resolve(response);
+                }, err => {
+                    reject(err);
+                });
+        });
+    };
 
     public getPlayers(playerIds: string[]) {
         return new Promise((resolve, reject) => {
