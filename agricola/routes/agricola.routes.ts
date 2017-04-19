@@ -33,11 +33,11 @@ export default class AgricolaRoutes {
                 });
         });
 
-        app.put('/agricola/begin', (req: express.Request, res: express.Response) => {
+        app.put('/agricola/beginOld', (req: express.Request, res: express.Response) => {
             console.log('starting a new agricola game');
             if (req.query.gameDefId !== undefined) {
                 if (req.query.date !== undefined) {
-                    this.controller.startGame(req.query.gameDefId, req.query.date)
+                    this.controller.startGameOld(req.query.gameDefId, req.query.date)
                         .then(response => {
                             res.status(200).send(response.id);
                         })
@@ -60,6 +60,27 @@ export default class AgricolaRoutes {
             else {
                 console.error('no game def id provided in begin!');
                 res.status(500).error('gameDefId is a required parameter!');
+            }
+        });
+
+        app.put('/agricola/begin', (req: express.Request, res: express.Response) => {
+            //TODO: Here we're cheating with the fact that IGameResultModel 
+            //and IAgricolaGameResultModel have the same property names
+            let bodyGame: IAgricolaGameResultModel = req.body;
+
+            if (bodyGame) {
+                this.controller.startGame(bodyGame)
+                    .then(response => {
+                        res.status(200).send(response.id);
+                    })
+                    .catch(err => {
+                        console.error('Got an error attempting to start an agricola game:\n' + err);
+                        res.status(500).send(err);
+                    });
+            }
+            else {
+                console.error('No Agricola Game was received in request to /agricola/begin!');
+                res.status(400).send('An agricola game is required in the body!');
             }
         });
 

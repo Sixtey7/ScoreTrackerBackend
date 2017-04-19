@@ -33,7 +33,7 @@ export default class AgricolaController {
         });
     }
 
-    public startGame(_gameDefId: string, _date?: number): Promise<IAgricolaGameResultModel> {
+    public startGameOld(_gameDefId: string, _date?: number): Promise<IAgricolaGameResultModel> {
         return new Promise((resolve, reject) => {
             let gameDate: Date;
             if (_date) {
@@ -53,6 +53,23 @@ export default class AgricolaController {
             );
         })
     }
+
+    public startGame(_gameContent: IAgricolaGameResultModel): Promise<IAgricolaGameResultModel> {
+        return new Promise((resolve, reject) => {
+            let newGameResult: IAgricolaGameResultModel = new AgricolaGameResult({
+                gameDefId: _gameContent._id,
+                date: _gameContent.date,
+                expansions: _gameContent.expansions
+            });
+
+            newGameResult.save()
+                .then(response => {
+                    resolve(response);
+                }, err => {
+                    reject(err);
+                });
+        });
+    };
 
     public getPlayers(playerIds: string[]) : Promise<IPlayerModel> {
         return new Promise((resolve, reject) => {
