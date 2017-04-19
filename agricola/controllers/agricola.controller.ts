@@ -14,46 +14,6 @@ import {
 } from '../agricola';
 
 export default class AgricolaController {
-    public test() : Promise<IAgricolaGameResultModel> {
-        return new Promise ((resolve, reject) => {
-            let agGameResult: IAgricolaGameResultModel = new AgricolaGameResult({ game: GameList.AGRICOLA});
-
-            let playerResult: IAgricolaPlayerResultModel = new AgricolaPlayerResult({ playerId: 1234});
-            playerResult.cowNum = 5;
-            playerResult.familyNum = 4;
-
-            agGameResult.playerResults.push(playerResult);
-
-            agGameResult.save()
-                .then(response => {
-                    resolve(agGameResult);
-                }, err => {
-                    reject (err);
-                })
-        });
-    }
-
-    public startGameOld(_gameDefId: string, _date?: number): Promise<IAgricolaGameResultModel> {
-        return new Promise((resolve, reject) => {
-            let gameDate: Date;
-            if (_date) {
-                gameDate = new Date(_date);
-            }
-            else {
-                gameDate = new Date();
-            }
-
-            let gameResult: IAgricolaGameResultModel = new AgricolaGameResult({ gameDefId: _gameDefId, date: gameDate});
-            gameResult.save()
-                .then(response => {
-                    resolve(gameResult);
-                }, err => {
-                    reject(err);
-                }
-            );
-        })
-    }
-
     public startGame(_gameContent: IAgricolaGameResultModel): Promise<IAgricolaGameResultModel> {
         return new Promise((resolve, reject) => {
             let newGameResult: IAgricolaGameResultModel = new AgricolaGameResult({

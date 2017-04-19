@@ -24,50 +24,6 @@ export default class StandardRoutes {
 
 
     private configureRoutes(app: express) {
-        console.log('TYPE: ' + typeof app);
-
-        app.get('/standard/hello', (req: express.Request, res: express.Response) => {
-            res.status(200).send(this.controller.sayHello());
-        });
-
-        app.put('/standard/beginOld', (req: express.Request, res: express.Response) => {
-            console.log('Starting a game!');
-
-            if (req.query.gameDefId !== undefined) {
-                if (req.query.date !== undefined) {
-                    this.controller.startGameOld(req.query.gameDefId, req.query.date)
-                        .then(response => {
-                            if (response) {
-                                res.status(200).send(response._id);
-                            }
-                            else {
-                                res.status(500).send('failed to save game in database!');
-                            }
-                        })
-                        .catch(err => {
-                            console.error('got an error attempting to save a game in the database:\n' + err);
-                            res.status(500).send(err);
-                        })
-                }
-                else {
-                    this.controller.startGameOld(req.query.gameDefId)
-                        .then(response => {
-                            if (response) {
-                                res.status(200).send(response.id);
-                            }
-                            else {
-                                res.status(500).send('failed to save game in database');
-                            }
-                        })
-                        .catch(err => {
-                            res.status(500).send(err);
-                        });
-                }
-            }
-            else {
-                res.status(400).send('gameDefId is a required parameter!');
-            }
-        });
 
         app.put('/standard/begin', (req: express.Request, res: express.Response) => {
             let bodyGame: IGameResultModel = req.body;

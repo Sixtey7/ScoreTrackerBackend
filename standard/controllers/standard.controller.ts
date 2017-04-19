@@ -17,31 +17,6 @@ import {
 
 export default class StandardController {
 
-    sayHello(): string {
-        return 'hello world';
-    }
-
-
-    public startGameOld(_gameDefId: string | number, _date?: number): Promise<IGameResultModel> {
-        console.log('starting a new game with def id: ' + _gameDefId);
-        return new Promise((resolve, reject) => {
-            let gameDate: Date;
-            if (_date) {
-                gameDate = new Date(_date);
-            }
-            else {
-                gameDate = new Date();
-            }
-            let gameResult: IGameResultModel = new GameResult({ gameDefId: _gameDefId, date: gameDate});
-            gameResult.save()
-                .then(response => {
-                    resolve(gameResult);
-                }, err => {
-                    reject(err);
-                });
-        });
-    }
-
     public startGame(_gameContents: IGameResultModel): Promise<IGameResultModel> {
         return new Promise((resolve, reject) => {
             let newGameResult: IGameResultModel = new GameResult({
