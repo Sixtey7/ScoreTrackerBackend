@@ -17,7 +17,7 @@ export default class AgricolaController {
     public startGame(_gameContent: IAgricolaGameResultModel): Promise<IAgricolaGameResultModel> {
         return new Promise((resolve, reject) => {
             let newGameResult: IAgricolaGameResultModel = new AgricolaGameResult({
-                gameDefId: _gameContent._id,
+                gameDefId: _gameContent.gameDefId,
                 date: _gameContent.date,
                 expansions: _gameContent.expansions
             });
@@ -72,7 +72,7 @@ export default class AgricolaController {
                 if (games) {
                     let returnVal: GameResultSummary[] = new Array<GameResultSummary>();
                     for (let x: number = 0; x < games.length; x++) {
-                        //TODO: Need to determine the id for agricola game
+
                         let newVal: GameResultSummary = new GameResultSummary(games[x].id, games[x].gameDefId, games[x].date);
                         for (let y = 0; y < games[x].playerResults.length; y++) {
                             newVal.playerResults.push(new PlayerResultSummary(games[x].playerResults[y].playerId, games[x].playerResults[y].score));
