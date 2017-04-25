@@ -6,13 +6,12 @@ Eventually plan to combine this repo with ScoreTrackerAng2, but for now building
 
 ## Current Focus
 + Agricola
-+ Castles of Burgandy
-+ Carcassone
-+ Lords of Waterdeep
++ Games with built-in scoring systems (e.g. Carcassonne)
+	+ In this case, this App is used for historical tracking
 
 ## Future Plan
-+ Pandemic
-    - Requires a board can win scenario
-
++ Player(s) vs the board games (e.g. Pandemic)
+	+ Require a different scoring system
+	
 ## Author
 Patrick Shaw
